@@ -1,0 +1,28 @@
+[package]
+name = "nateos"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+bootloader = "0.12"
+x86_64 = "0.14"
+spin = "0.9"
+volatile = "0.4"
+bitflags = "2.0"
+lazy_static = { version = "1.4", features = ["spin_no_std"] }
+heapless = "0.8"
+
+[profile.dev]
+panic = "abort"
+opt-level = 0
+debug = true
+
+[profile.release]
+panic = "abort"
+opt-level = 3
+lto = true
+codegen-units = 1
+

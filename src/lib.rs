@@ -22,6 +22,11 @@ pub mod userspace;
 pub mod performance;
 pub mod testing;
 pub mod stability;
+pub mod hardware;
+pub mod containers;
+pub mod services;
+pub mod tools;
+pub mod production;
 
 #[alloc_error_handler]
 fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {

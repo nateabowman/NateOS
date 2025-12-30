@@ -21,6 +21,11 @@ mod userspace;
 mod performance;
 mod testing;
 mod stability;
+mod hardware;
+mod containers;
+mod services;
+mod tools;
+mod production;
 
 use core::panic::PanicInfo;
 
@@ -30,6 +35,11 @@ pub extern "C" fn _start() -> ! {
     boot::init();
     interrupts::init();
     memory::init();
+    
+    // Initialize advanced memory features
+    memory::SWAP_MANAGER.init(0, 1024 * 1024); // 512MB swap
+    memory::MEMORY_COMPRESSOR.enable();
+    
     io::init();
     timer::init();
     
@@ -56,6 +66,28 @@ pub extern "C" fn _start() -> ! {
     // Initialize stability systems
     stability::watchdog::WATCHDOG.init();
     
+    // Initialize hardware
+    hardware::pci::PCI_MANAGER.init();
+    hardware::acpi::ACPI_MANAGER.init().ok();
+    hardware::power::POWER_MANAGER.init();
+    hardware::thermal::THERMAL_MANAGER.init();
+    
+    // Initialize services
+    services::init::INIT_SYSTEM.init();
+    
+    // Initialize containers
+    containers::namespace::NAMESPACE_MANAGER.create_namespace(containers::namespace::NamespaceType::Pid);
+    
+    // Initialize tools
+    tools::debugger::DEBUGGER.enable();
+    tools::tracing::TRACING.enable();
+    
+    // Apply production hardening
+    production::hardening::HARDENING.run_security_audit();
+    production::hardening::HARDENING.apply_hardening();
+    production::optimization::OPTIMIZATION.apply_optimizations();
+    production::monitoring::MONITORING.record_metrics();
+    
     // Print welcome message
     io::println!("NateOS Kernel v0.1.0");
     io::println!("Initialization complete.");
@@ -66,6 +98,11 @@ pub extern "C" fn _start() -> ! {
     io::println!("User space support ready.");
     io::println!("Performance optimizations enabled.");
     io::println!("Stability monitoring active.");
+    io::println!("Hardware support initialized.");
+    io::println!("System services started.");
+    io::println!("Container runtime ready.");
+    io::println!("Development tools available.");
+    io::println!("Production hardening applied.");
     
     // Start shell
     userspace::shell::SHELL.run();

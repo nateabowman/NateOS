@@ -3,7 +3,20 @@ use x86_64::PhysAddr;
 use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
 
 pub mod vmm;
+pub mod numa;
+pub mod swap;
+pub mod huge_pages;
+pub mod oom;
+pub mod slab;
+pub mod compression;
+
 pub use vmm::VirtualMemoryManager;
+pub use numa::{NumaManager, NUMA_MANAGER};
+pub use swap::{SwapManager, SWAP_MANAGER};
+pub use huge_pages::{HugePageAllocator, HUGE_PAGE_ALLOCATOR};
+pub use oom::{OomKiller, OOM_KILLER};
+pub use slab::{SlabAllocator, SLAB_ALLOCATOR};
+pub use compression::{MemoryCompressor, MEMORY_COMPRESSOR};
 
 /// A frame allocator that uses the bootloader's memory map
 pub struct BootInfoFrameAllocator {
